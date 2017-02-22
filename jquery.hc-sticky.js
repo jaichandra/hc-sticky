@@ -506,22 +506,23 @@
 						}
 					};
 
-					// check for width change (css media queries)
+					// check for width and height change (css media queries)
 					if (options.responsive) {
 						// clone element and make it invisible
 						if (!$resize_clone) {
 							$resize_clone = $this.clone().attr('style', '').css({
 								visibility: 'hidden',
-								height: 0,
 								overflow: 'hidden',
 								paddingTop: 0,
 								paddingBottom: 0,
 								marginTop: 0,
-								marginBottom: 0
+								marginBottom: 0,
+								position: 'absolute'
 							});
 							$wrapper.after($resize_clone);
 						}
 
+						// check width change
 						var wrapper_width = $wrapper.style('width');
 						var resize_clone_width = $resize_clone.style('width');
 
@@ -529,9 +530,22 @@
 							resize_clone_width = parseInt($this.css('width'));
 						}
 
-						// recalculate wrpaeer width
+						// recalculate wrapper width
 						if (resize_clone_width != wrapper_width) {
 							$wrapper.width(resize_clone_width);
+						}
+
+						// check height change
+						var wrapper_height = $wrapper.style('height');
+						var resize_clone_height = $resize_clone.style('height');
+
+						if (resize_clone_height == 'auto' && wrapper_height != 'auto') {
+							resize_clone_height = parseInt($this.css('height'));
+						}
+
+						// recalculate wrapper height
+						if (resize_clone_height != wrapper_height) {
+							$wrapper.height(resize_clone_height);
 						}
 
 						// clear previous timeout
@@ -545,7 +559,7 @@
 							// destroy cloned element
 							$resize_clone.remove();
 							$resize_clone = false;
-						}, 250);
+						}, 50);
 					}
 
 					// set new left position
